@@ -13,6 +13,8 @@ An AI-powered legal Q&A assistant built on a **Retrieval-Augmented Generation (R
 
 ## Architecture
 
+![CaseLaw Assistant architecture](Law_Chatbot_Architecture.svg)
+
 ```
 Browser (chat.html)
       │  POST /chat
