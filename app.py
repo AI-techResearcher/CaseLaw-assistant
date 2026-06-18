@@ -52,22 +52,22 @@ def _initialize_system():
 
         weaviate_url = os.getenv("WEAVIATE_URL", "")
         weaviate_key = os.getenv("WEAVIATE_API_KEY", "")
-        openrouter_key = os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY", "")
+        openai_key = os.getenv("OPENAI_API_KEY", "")
 
         print(f"🔍 WEAVIATE_URL: {'SET' if weaviate_url else 'NOT_SET'}")
         print(f"🔍 WEAVIATE_API_KEY: {'SET' if weaviate_key else 'NOT_SET'}")
-        print(f"🔍 OPENROUTER_API_KEY: {'SET' if openrouter_key else 'NOT_SET'}")
+        print(f"🔍 OPENAI_API_KEY: {'SET' if openai_key else 'NOT_SET'}")
 
-        if not (weaviate_url and weaviate_key and openrouter_key):
+        if not (weaviate_url and weaviate_key and openai_key):
             print("❌ Error: Missing required environment variables!")
-            print("Set WEAVIATE_URL, WEAVIATE_API_KEY and OPENROUTER_API_KEY "
+            print("Set WEAVIATE_URL, WEAVIATE_API_KEY and OPENAI_API_KEY "
                   "(see .env.example).")
             return
 
         config = AppConfig(
             weaviate_url=weaviate_url,
             weaviate_api_key=weaviate_key,
-            openai_api_key=openrouter_key,
+            openai_api_key=openai_key,
             weaviate_class=os.getenv("WEAVIATE_CLASS", "JustiaFederalCases"),
             text_key="text",
             metadata_attributes=["text"],

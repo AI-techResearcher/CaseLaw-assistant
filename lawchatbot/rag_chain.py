@@ -4,33 +4,29 @@ from langchain_openai import ChatOpenAI
 from langchain.chains import RetrievalQAWithSourcesChain
 from langchain.prompts import PromptTemplate
 
-# Defaults can be overridden via environment variables.
-DEFAULT_MODEL = "deepseek/deepseek-r1-0528"
-DEFAULT_BASE_URL = "https://openrouter.ai/api/v1"
+# Default OpenAI model; override via the OPENAI_MODEL environment variable.
+DEFAULT_MODEL = "gpt-4o-mini"
 
 
 def initialize_llm() -> ChatOpenAI:
     """
-    Initialize the chat LLM for RAG.
+    Initialize the OpenAI chat LLM for RAG.
 
     Credentials and model are read from the environment so that no secret is
     ever committed to source control:
 
-      - OPENROUTER_API_KEY  (required) — API key for the OpenAI-compatible provider
-      - OPENROUTER_MODEL    (optional) — model id, defaults to deepseek-r1
-      - OPENROUTER_BASE_URL (optional) — API base URL, defaults to OpenRouter
+      - OPENAI_API_KEY (required) — your OpenAI API key
+      - OPENAI_MODEL   (optional) — model id, defaults to gpt-4o-mini
     """
-    api_key = os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY")
+    api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         raise RuntimeError(
-            "Missing LLM credentials: set OPENROUTER_API_KEY (or OPENAI_API_KEY) "
-            "in the environment / .env file."
+            "Missing OPENAI_API_KEY: set it in the environment / .env file."
         )
 
     return ChatOpenAI(
-        model=os.getenv("OPENROUTER_MODEL", DEFAULT_MODEL),
+        model=os.getenv("OPENAI_MODEL", DEFAULT_MODEL),
         api_key=api_key,
-        base_url=os.getenv("OPENROUTER_BASE_URL", DEFAULT_BASE_URL),
         temperature=0,
         max_tokens=8192,
     )

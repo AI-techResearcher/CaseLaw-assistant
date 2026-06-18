@@ -6,7 +6,7 @@ An AI-powered legal Q&A assistant built on a **Retrieval-Augmented Generation (R
 
 - **Hybrid retrieval** — combines dense semantic search (Jina embeddings) with BM25 keyword search via a LangChain `EnsembleRetriever`.
 - **Cloud vector store** — backed by [Weaviate Cloud](https://weaviate.io/).
-- **Pluggable LLM** — uses any OpenAI-compatible endpoint (default: DeepSeek‑R1 via [OpenRouter](https://openrouter.ai/)).
+- **OpenAI LLM** — answers generated with OpenAI models (default: `gpt-4o-mini`).
 - **Source attribution** — the UI shows the documents that informed each answer.
 - **FastAPI backend** with a lightweight chat UI (Jinja2 + vanilla JS).
 - **Dockerized** for reproducible deployment.
@@ -23,7 +23,7 @@ FastAPI (app.py)
 RAG chain (RetrievalQAWithSourcesChain)
       ├── Hybrid retriever ── Semantic (Jina v3 embeddings) ─┐
       │                       BM25 (rank_bm25)               ├── Weaviate Cloud
-      └── LLM (OpenRouter / OpenAI-compatible)               ┘
+      └── LLM (OpenAI)                                       ┘
 ```
 
 | Module | Responsibility |
@@ -40,7 +40,7 @@ RAG chain (RetrievalQAWithSourcesChain)
 
 - Python 3.11+
 - A [Weaviate Cloud](https://console.weaviate.cloud/) cluster with your legal documents indexed
-- An [OpenRouter](https://openrouter.ai/) (or other OpenAI-compatible) API key
+- An [OpenAI](https://platform.openai.com/) API key
 
 ## Configuration
 
@@ -55,10 +55,9 @@ cp .env.example .env
 | --- | --- | --- |
 | `WEAVIATE_URL` | ✅ | Weaviate Cloud cluster URL |
 | `WEAVIATE_API_KEY` | ✅ | Weaviate API key |
-| `OPENROUTER_API_KEY` | ✅ | LLM provider API key (`OPENAI_API_KEY` also accepted) |
+| `OPENAI_API_KEY` | ✅ | OpenAI API key |
 | `WEAVIATE_CLASS` | — | Collection name (default `JustiaFederalCases`) |
-| `OPENROUTER_MODEL` | — | Model id (default `deepseek/deepseek-r1-0528`) |
-| `OPENROUTER_BASE_URL` | — | API base (default OpenRouter) |
+| `OPENAI_MODEL` | — | Model id (default `gpt-4o-mini`) |
 | `ALLOWED_ORIGINS` | — | Comma-separated CORS origins (default `*`) |
 
 ## Run locally
@@ -94,17 +93,6 @@ curl -X POST http://localhost:7860/chat \
   -H "Content-Type: application/json" \
   -d '{"question": "What is the standard for summary judgment?"}'
 ```
-
-## Deploying to Hugging Face Spaces (optional)
-
-This repo is also Spaces-compatible (Docker SDK). Create a Docker Space, push this
-repository, and set `WEAVIATE_URL`, `WEAVIATE_API_KEY`, and `OPENROUTER_API_KEY`
-as **Space secrets**.
-
-## Security
-
-- Never commit `.env` or any real API key. `.gitignore` excludes it.
-- Rotate any key that has previously been exposed.
 
 ---
 
